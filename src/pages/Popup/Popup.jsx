@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from "react-dom";
 import logo from '../../assets/img/logo.svg';
 import Greetings from '../../containers/Greetings/Greetings';
 import './Popup.css';
@@ -33,7 +32,6 @@ if (extensionRoot) {
 
       // Append div to shadow DOM
       shadowRoot.appendChild(div);
-      // ReactDOM.s(<Popup/>, div);
     }
   }
 }

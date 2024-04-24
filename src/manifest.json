@@ -7,7 +7,7 @@
     "service_worker": "background.bundle.js" 
   },
   "action": {
-    "default_title": "Shorterms",
+    "default_title": "Shorterms - instantly shorten ToS",
     "default_popup": "popup.html",
     "default_icon": "icon-34.png"
   },
@@ -27,5 +27,13 @@
       "resources": ["content.styles.css", "icon-128.png", "icon-34.png"],
       "matches": []
     }
-  ]
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      }
+    }
+  }
 }
