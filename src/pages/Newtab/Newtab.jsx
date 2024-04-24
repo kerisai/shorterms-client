@@ -6,7 +6,7 @@ import './Newtab.scss';
 const Newtab = () => {
   return (
     <div className="App">
-      {/* <header className="App-header">
+      <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/pages/Newtab/Newtab.js</code> and save to reload.
@@ -20,7 +20,7 @@ const Newtab = () => {
           Learn React!
         </a>
         <h6>The color of this paragraph is defined using SASS.</h6>
-      </header> */}
+      </header>
     </div>
   );
 };
