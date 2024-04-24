@@ -64,6 +64,24 @@ var options = {
         use: [
           {
             loader: 'style-loader',
+            options: {
+              insert: function (element) {
+                const extensionHostID = "extension-host";
+                let extensionHost = document.getElementById(extensionHostID);
+
+                if (!extensionHost) {
+                  extensionHost = document.createElement("div");
+                  extensionHost.setAttribute("id", extensionHostID);
+                  document.body.append(extensionHost);
+                  extensionHost.attachShadow({
+                    mode: "open",
+                  });
+
+                  // Add style tag to shadow host 
+                  extensionHost.shadowRoot.appendChild(element);
+                }
+              }
+            }
           },
           {
             loader: 'css-loader',
