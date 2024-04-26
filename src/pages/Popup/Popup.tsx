@@ -85,7 +85,7 @@ const Popup = () => {
     }
 
     // TODO DELETE - CONTROL PAGE for DEV
-    setView(View.TOSFound);
+    setView(View.ShortenTOSFinished);
   };
 
   const renderView = (): React.ReactNode => {

@@ -11,7 +11,7 @@ const ContentPageWrapper = ({
 }: ContentPageProps) => {
   return (
     <div className={`
-      relative mt-[50px] w-full min-h-full 
+      relative mt-[50px] w-full h-[550px]
       overflow-x-hidden ${scroll ? "overflow-y-scroll" : "overflow-y-hidden"}
       bg-backdrop
     `}>
