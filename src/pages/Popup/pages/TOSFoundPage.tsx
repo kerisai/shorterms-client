@@ -4,12 +4,7 @@ import { IoIosWarning } from "react-icons/io";
 
 import Button from '../components/Button';
 
-const TermsDetectionPage = () => {
-  let temp = [];
-  for (let i = 0; i < 100; i++) {
-    temp.push("Lorem ipsum");
-  }
-
+const TOSFoundPage = () => {
   return (
     <div 
     // NOTE top-[80%] pushes content to container bottom, adjust ~20% in top distance for extension layout
@@ -59,4 +54,4 @@ const TermsDetectionPage = () => {
   );
 }
 
-export default TermsDetectionPage;
+export default TOSFoundPage;

@@ -5,7 +5,7 @@ interface ContentPageProps {
   scroll?: boolean;
 }
 
-const ContentPage = ({ 
+const ContentPageWrapper = ({ 
   children, 
   scroll = false,
 }: ContentPageProps) => {
@@ -20,4 +20,4 @@ const ContentPage = ({
   );
 };
 
-export default ContentPage;
+export default ContentPageWrapper;

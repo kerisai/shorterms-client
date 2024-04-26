@@ -1,24 +1,47 @@
 import React, { useState } from 'react';
 import "../../assets/styles/tailwind.css";
 
-import logo from '../../assets/img/logo.svg';
+import PopupWrapper from './wrappers/PopupWrapper';
+import ContentPageWrapper from "./wrappers/ContentPageWrapper";
 
 import Header from './components/Header';
-import ContentPage from "./pages/ContentPage";
-import TermsDetectionPage from './pages/TermsDetectionPage';
+import TOSFoundPage from './pages/TOSFoundPage';
 
+/** Shorterms App States
+ * 1. Detecting ToS 
+ *  -- the app is searching for a ToS link on the current page => DetectingTOSLoaderPage
+ * 2. ToS Found 
+ *  -- the app has found a ToS link within the user's current page => TOSFoundPage
+ * 3. ToS Not Found 
+ *  -- the app cannot find a ToS link on the current page => NoTOSFoundPage
+ * 4. Shorten ToS Loading 
+ *  -- user consents to Shorten ToS and shortening service is run => ShorteningTOSLoaderPage
+ * 5. Shorten ToS Finished
+ *  -- system displays the results page with the 4 main tabs => ShortenTOSResultPage
+ */
 
 const Popup = () => {
-  const [isDetectionPage, setIsDetectionPage] = useState<boolean>(true);
+  const [isPageScrollable, setIsPageScrollable] = useState<boolean>(false);
+
+  const [detectedTOSLink, setDetectedTOSLink] = useState<string>("");
+
+  const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className={`w-[400px] h-[600px] rounded overflow-hidden`}>
+    <PopupWrapper>
       <Header />
       
-      <ContentPage scroll={!isDetectionPage}>
-        <TermsDetectionPage />
-      </ContentPage>
-    </div>
+      <ContentPageWrapper scroll={isPageScrollable}>
+        {isLoading && (
+          <div>
+            LOADING
+          </div>
+        )}
+        {detectedTOSLink.length > 0 && (
+          <TOSFoundPage />
+        )}
+      </ContentPageWrapper>
+    </PopupWrapper>
   );
 };
 
