@@ -2,11 +2,19 @@ import React, { ReactNode } from "react";
 
 interface ContentPageProps {
   children: ReactNode;
+  scroll?: boolean;
 }
 
-const ContentPage = ({ children }: ContentPageProps) => {
+const ContentPage = ({ 
+  children, 
+  scroll = false,
+}: ContentPageProps) => {
   return (
-    <div className={`mt-[50px] w-full h-full overflow-x-hidden overflow-y-scroll`}>
+    <div className={`
+      relative mt-[50px] w-full min-h-full 
+      overflow-x-hidden ${scroll ? "overflow-y-scroll" : "overflow-y-hidden"}
+      bg-backdrop
+    `}>
       {children}
     </div>
   );

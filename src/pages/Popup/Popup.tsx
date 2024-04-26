@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import "../../assets/styles/tailwind.css";
 
 import logo from '../../assets/img/logo.svg';
@@ -9,11 +9,13 @@ import TermsDetectionPage from './pages/TermsDetectionPage';
 
 
 const Popup = () => {
+  const [isDetectionPage, setIsDetectionPage] = useState<boolean>(true);
+
   return (
-    <div className={`w-[350px] h-[600px] rounded overflow-hidden`}>
+    <div className={`w-[400px] h-[600px] rounded overflow-hidden`}>
       <Header />
       
-      <ContentPage>
+      <ContentPage scroll={!isDetectionPage}>
         <TermsDetectionPage />
       </ContentPage>
     </div>
