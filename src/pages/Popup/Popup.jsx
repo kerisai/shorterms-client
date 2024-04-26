@@ -1,14 +1,22 @@
 import React from 'react';
+import "../../assets/styles/tailwind.css";
+
 import logo from '../../assets/img/logo.svg';
 import Greetings from '../../containers/Greetings/Greetings';
-import Header from './components/Header';
 
-import "../../assets/styles/tailwind.css";
+import Header from './components/Header';
+import ContentPage from "./pages/ContentPage";
+import TermsDetectionPage from './pages/TermsDetectionPage';
+
 
 const Popup = () => {
   return (
-    <div className={`w-[350px] h-[600px] rounded`}>
+    <div className={`w-[350px] h-[600px] rounded overflow-hidden`}>
       <Header />
+      
+      <ContentPage>
+        <TermsDetectionPage />
+      </ContentPage>
     </div>
   );
 };
