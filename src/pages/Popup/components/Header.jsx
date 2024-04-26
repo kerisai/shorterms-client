@@ -8,8 +8,11 @@ const Header = () => {
     window.close();
   };
   return (
-    <>
-      <div className="flex justify-between px-4 py-2">
+    <nav className="w-full fixed top-0 bg-white z-10">
+      <div className={`
+        flex justify-between 
+        px-4 py-2
+      `}>
         <img src={ShortermsIcon} width={100} alt='Shorterms logo' />
 
         {/* <CrossIcon /> */}
@@ -21,8 +24,8 @@ const Header = () => {
         />
       </div>
       
-      <hr className="border-[1.5px]" />
-    </>
+      <hr className="border-[1.5px] border-gray-300 w-full" />
+    </nav>
   );
 };
 
