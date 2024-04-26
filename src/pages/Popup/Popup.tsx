@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "../../assets/styles/tailwind.css";
 
 // Wrappers
@@ -16,6 +16,7 @@ import ShortenTOSResultPage from './pages/ShortenTOSResultPage';
 // Other
 import DetectTOSService from './service/DetectTOSService';
 import ErrorPage from './pages/ErrorPage';
+
 
 /** Shorterms App States
  * 1. Initial / Detecting ToS 
@@ -82,6 +83,9 @@ const Popup = () => {
       console.log(err);
       setView(View.Error);
     }
+
+    // TODO DELETE - CONTROL PAGE for DEV
+    setView(View.TOSFound);
   };
 
   const renderView = (): React.ReactNode => {
@@ -98,7 +102,9 @@ const Popup = () => {
       case View.Error:
         return <ErrorPage />;
       default: 
-        return <DetectingTOSLoaderPage />;
+        return <DetectingTOSLoaderPage
+          findTOSLink={findTOSLink}
+        />;
     }
   };
 
@@ -112,25 +118,5 @@ const Popup = () => {
     </PopupWrapper>
   );
 };
-
-// COMMENTED DUE TO RENDERING BUG
-// // Select our shadow host
-// let extensionRoot = document.getElementById('extension-host');
-// if (extensionRoot) {
-//   // Create the shadow root
-//   const shadowRoot = extensionRoot.shadowRoot;
-
-//   if (shadowRoot) {
-//     let div = shadowRoot.getElementById('extension');
-//     if (!div) {
-//       // Create a div element
-//       div = document.createElement('div');
-//       div.setAttribute('id', 'extension');
-
-//       // Append div to shadow DOM
-//       shadowRoot.appendChild(div);
-//     }
-//   }
-// }
 
 export default Popup;
