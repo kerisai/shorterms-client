@@ -2,7 +2,6 @@ import React from 'react';
 import "../../assets/styles/tailwind.css";
 
 import logo from '../../assets/img/logo.svg';
-import Greetings from '../../containers/Greetings/Greetings';
 
 import Header from './components/Header';
 import ContentPage from "./pages/ContentPage";

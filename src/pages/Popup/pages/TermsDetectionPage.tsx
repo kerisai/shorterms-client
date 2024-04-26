@@ -7,12 +7,22 @@ const TermsDetectionPage = () => {
   }
 
   return (
-    <div className={`w-full min-h-full bg-green-300`}>
-      {temp.map(item => (
+    <div className={`w-full min-h-full flex flex-col bg-green-300`}>
+      <img />
+
+      <h1>
+        We detected a Terms of Service link on this site
+      </h1>
+      <p>
+        Do you want to summarize it using Shorterms AI?
+      </p>
+
+      {/* {temp.map(item => (
         <div className="text-lg">
           {item}
         </div>
       ))}
+       */}
     </div>
   );
 }
