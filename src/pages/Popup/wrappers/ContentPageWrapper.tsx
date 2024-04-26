@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 
 interface ContentPageProps {
   children: ReactNode;
-  scroll?: boolean;
+  scroll: Boolean;
 }
 
 const ContentPageWrapper = ({ 
