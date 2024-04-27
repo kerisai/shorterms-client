@@ -4,7 +4,8 @@
   "description": "Shorten any terms of service, in your browser",
   "options_page": "options.html",
   "background": { 
-    "service_worker": "background.bundle.js" 
+    "service_worker": "background.bundle.js",
+    "mode": "module"
   },
   "action": {
     "default_title": "Shorterms - instantly shorten ToS",
@@ -16,7 +17,8 @@
   },
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "tabs"
   ],
   "content_scripts": [
     {
