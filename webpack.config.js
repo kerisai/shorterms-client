@@ -44,11 +44,15 @@ var options = {
     popup: path.join(__dirname, 'src', 'pages', 'Popup', 'index.tsx'),
     background: path.join(__dirname, 'src', 'pages', 'Background', 'index.js'),
     contentScript: path.join(__dirname, 'src', 'pages', 'Content', 'index.ts'),
-    devtools: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.js'),
+    // devtools: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.js'),
     panel: path.join(__dirname, 'src', 'pages', 'Panel', 'index.jsx'),
   },
   chromeExtensionBoilerplate: {
-    notHotReload: ['background', 'contentScript', 'devtools'],
+    notHotReload: [
+      'background', 
+      'contentScript', 
+      // 'devtools'
+  ],
   },
   output: {
     filename: '[name].bundle.js',
@@ -138,7 +142,7 @@ var options = {
       .concat(['.js', '.jsx', '.ts', '.tsx', '.css']),
   },
   plugins: [
-    isDevelopment && new ReactRefreshWebpackPlugin(),
+    isDevelopment && new ReactRefreshWebpackPlugin({ overlay: false }),
     new CleanWebpackPlugin({ verbose: false }),
     new webpack.ProgressPlugin(),
     // expose and write the allowed env vars on the compiled bundle
@@ -207,12 +211,12 @@ var options = {
       chunks: ['popup'],
       cache: false,
     }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.html'),
-      filename: 'devtools.html',
-      chunks: ['devtools'],
-      cache: false,
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.html'),
+    //   filename: 'devtools.html',
+    //   chunks: ['devtools'],
+    //   cache: false,
+    // }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'pages', 'Panel', 'index.html'),
       filename: 'panel.html',

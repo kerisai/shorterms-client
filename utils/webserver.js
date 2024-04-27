@@ -30,17 +30,19 @@ var server = new WebpackDevServer(
     https: false,
     hot: true,
     liveReload: false,
+    // Use websockets instead of SockJS - https://github.com/lxieyang/chrome-extension-boilerplate-react/issues/150#issuecomment-1405037366
     client: {
-      webSocketTransport: 'sockjs',
+      webSocketTransport: 'ws',
     },
-    webSocketServer: 'sockjs',
+    webSocketServer: 'ws',
     host: 'localhost',
     port: env.PORT,
     static: {
       directory: path.join(__dirname, '../build'),
     },
     devMiddleware: {
-      publicPath: `http://localhost:${env.PORT}/`,
+      // publicPath: `http://localhost:${env.PORT}/`,
+      publicPath: `wss://localhost:${env.PORT}/`,
       writeToDisk: true,
     },
     headers: {
