@@ -2,8 +2,6 @@ console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
 
 // Run Content Script on Window Load
-
-// document.addEventListener("load", () => {
 window.addEventListener("load", () => {
   console.log("window.onLoad()...");
   
@@ -50,10 +48,13 @@ const filterAnchorsByTextContent = (
   return termsURL;
 };
 
-const findTermsURLInPage = (): string | null => {
-  let termsURL: string = "";
+const findTermsURLInPage = async (): Promise<string | null> => {
+  const POLLING_DURATION_SEC = 10;
   
-  const anchorTagsList = document.querySelectorAll("a");
+  let termsURL = "";
+  
+  const anchorTagsList = await pollFindTermsURL(POLLING_DURATION_SEC);
+  // const anchorTagsList = document.querySelectorAll("a");
 
   const fakeDOM = document.getElementsByTagName('body')[0];
   console.log(`DOM length ${fakeDOM.innerHTML.length} chars\n`);
@@ -77,10 +78,44 @@ const findTermsURLInPage = (): string | null => {
   return termsURL;
 };
 
+// Polling process for finding Terms URL for pages with delayed script load
+const pollFindTermsURL = async (
+  duration_secs: number,
+): Promise<NodeListOf<HTMLAnchorElement>> => {
+  const MS_IN_SECONDS = 1000;
+  const POLL_COUNT = 20;
+  const POLL_INTERVAL_SEC = duration_secs / POLL_COUNT;
+
+  let pollingTries = 0;
+  let anchorTagsList: NodeListOf<HTMLAnchorElement>;
+
+  return new Promise((resolve, reject) => {
+    const timer = setInterval(() => {
+      if (pollingTries >= POLL_COUNT) {
+        console.log("Max poll tries reached...");
+        clearTimeout(timer);
+        reject(new Error("Failed to retrieve anchor element within specified duration"));
+      }
+      
+      console.log(`Running poll... #${pollingTries + 1}`);
+      pollingTries++;
+      anchorTagsList = document.querySelectorAll("a");
+  
+      if (anchorTagsList.length === 0) {
+        console.log(`ERROR, No links found: anchorTagsList has 0 elements!`);
+      } else {
+        // Stop interval if anchor tags are found
+        clearTimeout(timer);
+        resolve(anchorTagsList);
+      }
+    }, POLL_INTERVAL_SEC * MS_IN_SECONDS);
+  });
+};
+
 const runContentScript = async () => {
   useMutationObserver();
 
-  let termsURL = findTermsURLInPage();
+  let termsURL = await findTermsURLInPage();
 
   // TODO pass to backend
   console.log("termsURL:", termsURL);
