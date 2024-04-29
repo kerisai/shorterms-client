@@ -97,8 +97,9 @@ const pollFindTermsURL = async (
         reject(new Error("Failed to retrieve anchor element within specified duration"));
       }
       
-      console.log(`Running poll... #${pollingTries + 1}`);
       pollingTries++;
+      console.log(`Running poll... #${pollingTries}`);
+      
       anchorTagsList = document.querySelectorAll("a");
   
       if (anchorTagsList.length === 0) {
