@@ -1,9 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ClipLoader } from 'react-spinners'
 
-type Props = {}
+interface Props {
+  summarizeCallback: () => void;
+}
 
-const ShorteningTOSLoaderPage = (props: Props) => {
+const ShorteningTOSLoaderPage = ({
+  summarizeCallback,
+}: Props) => {
+  useEffect(() => {
+    summarizeCallback();
+  }, []);
+  
   return (
     <div className="w-full h-[70dvh] flex flex-col justify-center items-center">
       <ClipLoader

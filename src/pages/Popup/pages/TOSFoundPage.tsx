@@ -1,10 +1,14 @@
 import React from 'react';
 import { IoIosWarning } from "react-icons/io";
-
-
 import Button from '../components/Button';
 
-const TOSFoundPage = () => {
+interface Props {
+  onAgree: () => void;
+}
+
+const TOSFoundPage = ({
+  onAgree,
+}: Props) => {
   return (
     <div 
     // NOTE top-[80%] pushes content to container bottom, adjust ~20% in top distance for extension layout
@@ -40,7 +44,7 @@ const TOSFoundPage = () => {
       <div className="w-[120px]">
         <Button 
           label="Yes"
-          onClick={() => {}}
+          onClick={onAgree}
         />
       </div>
 

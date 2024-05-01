@@ -47,12 +47,13 @@ const Popup = () => {
    * App Main States
    */
   const [view, setView] = useState<View>(View.InitLoading);
-  const [termsURL, setTermsURL] = useState<String>("");
-  const [isDetectingTOS, setIsDetectingTOS] = useState<Boolean>(false);
-  const [isTOSFound, setIsTOSFound] = useState<Boolean>(false);
-  const [isTOSShorteningLoading, setIsTOSShorteningLoading] = useState<Boolean>(false);
-  const [isTOSShorteningFinished, setIsTOSShorteningFinished] = useState<Boolean>(false);
-  
+  const [termsURL, setTermsURL] = useState<string>("");
+  const [summarizeData, setSummarizeData] = useState<{
+    service_provider: string,
+    effective_date: string,
+    content: string,
+  } | null >(null);
+
   /**
    * Auxiliary States
    */
@@ -92,17 +93,54 @@ const Popup = () => {
     // setView(View.ShortenTOSFinished);
   };
 
+  const userAgreesToSummarizeTOS = () => {
+    console.log("User given agreement to summarize TOS...");
+    setView(View.ShortenTOSLoading);
+  };
+
+  const fetchTOSSummary = async () => {
+    const response = await fetch("https://shorterms-api.fly.dev/summaries", {
+      method: "POST",
+      body: JSON.stringify({
+        link_to_page: termsURL,
+      }),
+    });
+    
+    const data = await response.json();
+
+    if (data) {
+      setView(View.ShortenTOSFinished);
+      setSummarizeData(data);
+    } else {
+      console.log("Error: summarize API failed to return data.");
+      setView(View.Error)
+    }
+  };
+
   const renderView = (): React.ReactNode => {
     // Simple routing mechanism for app
     switch(view) {
       case View.TOSNotFound:
         return <NoTOSFoundPage />;
       case View.TOSFound:
-        return <TOSFoundPage />;
+        return <TOSFoundPage
+          onAgree={userAgreesToSummarizeTOS}
+        />;
       case View.ShortenTOSLoading:
-        return <ShorteningTOSLoaderPage />;
+        return <ShorteningTOSLoaderPage
+          summarizeCallback={fetchTOSSummary}
+        />;
       case View.ShortenTOSFinished:
-        return <ShortenTOSResultPage />;
+        if (summarizeData !== null) {
+          return <ShortenTOSResultPage
+            service_provider={summarizeData.service_provider}
+            effective_date={summarizeData.effective_date}
+            content={summarizeData.content}
+            terms_url={termsURL}
+          />;
+        }
+        
+        return <ErrorPage />;
       case View.Error:
         return <ErrorPage />;
       default: 
