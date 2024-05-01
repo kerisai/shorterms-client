@@ -64,6 +64,27 @@ const Popup = () => {
    */
   const [detectedTOSLink, setDetectedTOSLink] = useState<String>("");
 
+  useEffect(() => {
+    const retriveCache = async () => {
+      console.log(`Running root useEffect ${new Date()}`);
+      const {termsURL: sessionTermsUrl} = await chrome.storage.session.get("termsURL")
+      if (!sessionTermsUrl) {
+        return;
+      }
+      
+      setTermsURL(sessionTermsUrl);
+      const { [sessionTermsUrl]: sessionSummarizeData } = await chrome.storage.session.get(sessionTermsUrl as string);
+  
+      if (typeof sessionSummarizeData !== "undefined" && sessionSummarizeData !== null) {
+        // console.log("sessionSummarizeData", sessionSummarizeData);
+        setSummarizeData(sessionSummarizeData);
+      }
+    };
+    
+    retriveCache();
+
+  }, []);
+
   // NOTE dummy data
   const service = new DetectTOSService();
 
@@ -88,9 +109,6 @@ const Popup = () => {
       
       setView(View.Error);
     }
-
-    // TODO DELETE - CONTROL PAGE for DEV
-    // setView(View.ShortenTOSFinished);
   };
 
   const userAgreesToSummarizeTOS = () => {
@@ -99,6 +117,22 @@ const Popup = () => {
   };
 
   const fetchTOSSummary = async () => {
+    const {termsURL: sessionTermsUrl} = await chrome.storage.session.get("termsURL");
+    if (sessionTermsUrl === termsURL) {
+      if (summarizeData) {
+        setView(View.ShortenTOSFinished);
+        return;
+      }
+    } else {
+      const { [termsURL]: sessionSummarizeData } = await chrome.storage.session.get(termsURL as string);
+  
+      if (sessionSummarizeData) {
+        setSummarizeData(sessionSummarizeData);
+        setView(View.ShortenTOSFinished);
+        return;
+      }
+    }
+    
     const response = await fetch("https://shorterms-api.fly.dev/summaries", {
       method: "POST",
       body: JSON.stringify({
@@ -111,6 +145,11 @@ const Popup = () => {
     if (data) {
       setView(View.ShortenTOSFinished);
       setSummarizeData(data);
+      
+      chrome.storage.session.set({
+        "termsURL": termsURL,
+        [termsURL]: data,
+      });
     } else {
       console.log("Error: summarize API failed to return data.");
       setView(View.Error)
@@ -131,6 +170,8 @@ const Popup = () => {
           summarizeCallback={fetchTOSSummary}
         />;
       case View.ShortenTOSFinished:
+        console.log(`View.ShortenTOSFinished.summarizeData: ${summarizeData}`);
+
         if (summarizeData !== null) {
           return <ShortenTOSResultPage
             service_provider={summarizeData.service_provider}
