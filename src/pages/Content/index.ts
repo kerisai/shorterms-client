@@ -1,25 +1,40 @@
 console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
 
-// Run Content Script on Window Load
-window.addEventListener("load", () => {
-  console.log("window.onLoad()...");
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log("Inside FIND_TOS_LINK_REQUEST");
+
+  if (message === "FIND_TOS_LINK_REQUEST") {
+    chrome.runtime.sendMessage("VALIDATE_URL", async (response: any) => {
+      if (response === "VALIDATE_URL_SUCCESS") {
+        console.log("VALIDATE_URL_SUCCESS, running script...");
   
-  chrome.runtime.sendMessage("VALIDATE_URL", (response: any) => {
-    if (response === "VALIDATE_URL_SUCCESS") {
-      console.log("VALIDATE_URL_SUCCESS, running script...");
-      runContentScript();
-    } else {
-      console.log("INVALID_URL");
-    }
-    
-    return;
-  });
+        try {
+          const termsURL = await runContentScript();
+          
+          if (termsURL === null) {
+            throw new Error("Error: termsURL is null!");
+          }
+  
+          console.log("SET termsURL", termsURL);
+          console.log(`sendResponse: ${termsURL}`);
+          sendResponse(termsURL);
+        } catch (err) {
+          const error = err as unknown as Error;
+          
+          console.log(error.message);
+        }
+      } else {
+        console.log("INVALID_URL");
+      }
+    });
+  }
+
+  // NOTE - Listener must return true bcs sendResponse is sent within async context
+  // https://www.extension.ninja/blog/post/solved-message-port-closed-before-response-was-received/
+  return true;
 });
 
-/**
- * 
- */
 const filterAnchorsByTextContent = (
   anchorTagsList: NodeListOf<HTMLAnchorElement>
 ) => {
@@ -48,34 +63,36 @@ const filterAnchorsByTextContent = (
   return termsURL;
 };
 
-const findTermsURLInPage = async (): Promise<string | null> => {
+const findTermsURLInPage = async (): Promise<string> => {
   const POLLING_DURATION_SEC = 10;
   
   let termsURL = "";
   
-  const anchorTagsList = await pollFindTermsURL(POLLING_DURATION_SEC);
-  // const anchorTagsList = document.querySelectorAll("a");
+  try {
+    const anchorTagsList = await pollFindTermsURL(POLLING_DURATION_SEC);
 
-  const fakeDOM = document.getElementsByTagName('body')[0];
-  console.log(`DOM length ${fakeDOM.innerHTML.length} chars\n`);
-  console.log("DOM\n", fakeDOM);
+    const fakeDOM = document.getElementsByTagName('body')[0];
+    console.log(`DOM length ${fakeDOM.innerHTML.length} chars\n`);
+    console.log("DOM\n", fakeDOM);
 
-  if (anchorTagsList.length == 0) {
-    console.log(`ERROR, No links found: anchorTagsList has 0 elements!`);
-    return null;
+    if (anchorTagsList.length == 0) {
+      throw new Error("Error: No links found, anchorTagsList has 0 elements!");
+    }
+
+    // Filter by "Terms" related textContent
+    console.log("<a> tags\n", anchorTagsList);
+    console.log(`Running filterAnchorsByTextContent on ${anchorTagsList.length} <a> tags`);
+    termsURL = filterAnchorsByTextContent(anchorTagsList);
+
+    if (termsURL.length === 0) {
+      throw new Error("Error: termsURL has length 0!");
+    }
+    
+    return termsURL;
+  } catch (error) {
+    // Throw error to caller
+    throw error;
   }
-
-  // Filter by "Terms" related textContent
-  console.log("<a> tags\n", anchorTagsList);
-  console.log(`Running filterAnchorsByTextContent on ${anchorTagsList.length} <a> tags`);
-  termsURL = filterAnchorsByTextContent(anchorTagsList);
-
-  if (termsURL.length === 0) {
-    console.log("termsURL has length 0!");
-    return null;
-  }
-  
-  return termsURL;
 };
 
 // Polling process for finding Terms URL for pages with delayed script load
@@ -94,34 +111,24 @@ const pollFindTermsURL = async (
       if (pollingTries >= POLL_COUNT) {
         console.log("Max poll tries reached...");
         clearTimeout(timer);
-        reject(new Error("Failed to retrieve anchor element within specified duration"));
+        reject(new Error("Error: Failed to retrieve anchor element within specified duration"));
       }
       
       pollingTries++;
       console.log(`Running poll... #${pollingTries}`);
-      
+
       anchorTagsList = document.querySelectorAll("a");
   
       if (anchorTagsList.length === 0) {
-        console.log(`ERROR, No links found: anchorTagsList has 0 elements!`);
+        console.log(`Poll ${pollingTries} - No links found: anchorTagsList has 0 elements!`);
       } else {
         // Stop interval if anchor tags are found
+        console.log(`Poll ${pollingTries} - Found result!`);
         clearTimeout(timer);
         resolve(anchorTagsList);
       }
     }, POLL_INTERVAL_SEC * MS_IN_SECONDS);
   });
-};
-
-const runContentScript = async () => {
-  useMutationObserver();
-
-  let termsURL = await findTermsURLInPage();
-
-  // TODO pass to backend
-  console.log("termsURL:", termsURL);
-
-  return true;
 };
 
 // MutationObserver impl
@@ -158,3 +165,84 @@ const useMutationObserver = () => {
     observer.disconnect();
   }, DURATION_SECS*1000);
 };
+
+/**
+ * A function to find the terms URL within the page
+ * @returns string
+ */
+const runContentScript = async (): Promise<string> => {
+  // useMutationObserver();
+
+  try {
+    return await findTermsURLInPage();
+  } catch (err: unknown) {
+    throw err;
+  }
+};
+
+
+// Run Content Script on Window Load
+// window.addEventListener("load", () => {
+//   chrome.runtime.sendMessage("VALIDATE_URL", async (response: any) => {
+//     if (response === "VALIDATE_URL_SUCCESS") {
+//       console.log("VALIDATE_URL_SUCCESS, running script...");
+
+//       try {
+//         const termsURL = await runContentScript();
+        
+//         if (termsURL === null) {
+//           throw new Error("Error: termsURL is null!");
+//         }
+
+//         console.log("SET termsURL to", termsURL);
+//         setTermsURL(termsURL);
+//       } catch (err) {
+//         const error = err as unknown as Error;
+
+//         console.log(error.message);
+//       }
+//     } else {
+//       console.log("INVALID_URL");
+//     }    
+//   });
+// });
+
+// const pingConnection = (): void => {
+//   chrome.runtime.sendMessage('ping', (response) => {
+//     if (chrome.runtime.lastError) {
+//       console.log("chrome.runtime.lastError === true");
+//       setTimeout(pingConnection, 500);
+//     } else {
+//       // Do the main logic inside this block - background script is ready now
+//       chrome.runtime.sendMessage("VALIDATE_URL", async (response: any) => {
+//         if (response === "VALIDATE_URL_SUCCESS") {
+//           console.log("VALIDATE_URL_SUCCESS, running script...");
+
+//           try {
+//             const termsURL = await runContentScript();
+            
+//             if (termsURL === null) {
+//               throw new Error("Error: termsURL is null!");
+//             }
+
+//             console.log("SET termsURL to", termsURL);
+//             setTermsURL(termsURL);
+//           } catch (err) {
+//             const error = err as unknown as Error;
+
+//             console.log(error.message);
+//           }
+//         } else {
+//           console.log("INVALID_URL");
+//         }    
+//       });
+//     }
+//   })
+// }
+// window.addEventListener("load", () => {
+//   console.log("window.onload.pingConnection()");
+//   pingConnection();
+// });
+
+// console.log("top level pingConnection()");
+// pingConnection();

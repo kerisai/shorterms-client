@@ -14,7 +14,7 @@ import ShorteningTOSLoaderPage from './pages/ShorteningTOSLoaderPage';
 import ShortenTOSResultPage from './pages/ShortenTOSResultPage';
 
 // Other
-import DetectTOSService from './service/DetectTOSService';
+import { DetectTOSService } from './service/DetectTOSService';
 import ErrorPage from './pages/ErrorPage';
 
 
@@ -80,12 +80,16 @@ const Popup = () => {
       setView(View.TOSFound);
       setTermsURL(fetchedTermsURL);
     } catch (err) {
-      console.log(err);
+      const error = err as unknown as Error;
+      
+      console.log("ERROR");
+      console.log(error);
+      
       setView(View.Error);
     }
 
     // TODO DELETE - CONTROL PAGE for DEV
-    setView(View.ShortenTOSFinished);
+    // setView(View.ShortenTOSFinished);
   };
 
   const renderView = (): React.ReactNode => {

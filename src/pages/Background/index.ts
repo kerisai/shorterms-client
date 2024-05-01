@@ -1,14 +1,14 @@
 console.log('This is the background page.');
 console.log('Put the background scripts here.');
 
+// chrome.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  // Filter keywords
-  const KEYWORDS = ["signin", "signup", "register", "sign-in", "sign-up"];
-
   if (msg !== "VALIDATE_URL") return; 
 
+  // Filter keywords
   console.log("Inside chrome.runtime.onMessage");
 
+  const KEYWORDS = ["signin", "signup", "register", "sign-in", "sign-up"];
   const tab = sender.tab;
 
   if (!tab || !tab.url || !tab.id) {
@@ -40,9 +40,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     const response = "VALIDATE_URL_SUCCESS";
 
     sendResponse(response);
+  } else {
+    const responseInvalid = "INVALID_URL";
+    console.log(responseInvalid);
+    sendResponse(responseInvalid);
   }
-
-  return;
 });
 
 const isSearchEngineQuery = (url: string) => {
@@ -57,11 +59,8 @@ const isSearchEngineQuery = (url: string) => {
     || url.includes(YOUTUBE);
 };
 
-// async function getActiveTab() {
-//   const tabs = await chrome.tabs.query({
-//       currentWindow: true,
-//       active: true
-//   });
-
-//   return tabs[0];
+// "externally_connectable": {
+//   "ids": ["ipdmhnfcaelfmeappeahgeofdncnncmb"],
+//   "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+//   "accepts_tls_channel_id": false
 // }
