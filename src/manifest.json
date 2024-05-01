@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Shorterms Client",
+  "name": "Shorterms",
   "description": "Shorten any terms of service, in your browser",
   "options_page": "options.html",
   "background": { 
