@@ -3,12 +3,20 @@ console.log('Put the background scripts here.');
 
 // chrome.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg !== "VALIDATE_URL") return; 
+  if (msg !== 'VALIDATE_URL') return;
 
   // Filter keywords
-  console.log("Inside chrome.runtime.onMessage");
+  console.log('Inside chrome.runtime.onMessage');
 
-  const KEYWORDS = ["signin", "signup", "register", "sign-in", "sign-up"];
+  const KEYWORDS = [
+    'login',
+    'log-in',
+    'signin',
+    'signup',
+    'register',
+    'sign-in',
+    'sign-up',
+  ];
   const tab = sender.tab;
 
   if (!tab || !tab.url || !tab.id) {
@@ -17,15 +25,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (isSearchEngineQuery(tab.url)) {
-    console.log("Tab is a search query!");
+    console.log('Tab is a search query!');
     return;
   }
 
   let url = tab.url;
   let urlContainsKeyword = false;
-  
+
   console.log(`url: ${url}`);
-  console.log("Finding valid keywords in URL...");
+  console.log('Finding valid keywords in URL...');
   for (const kw of KEYWORDS) {
     console.log(`Checking keyword ${kw} in url`);
     if (url.toLowerCase().includes(kw)) {
@@ -37,24 +45,26 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   console.log(`urlContainsKeyword: ${urlContainsKeyword}`);
 
   if (urlContainsKeyword) {
-    const response = "VALIDATE_URL_SUCCESS";
+    const response = 'VALIDATE_URL_SUCCESS';
 
     sendResponse(response);
   } else {
-    const responseInvalid = "INVALID_URL";
+    const responseInvalid = 'INVALID_URL';
     console.log(responseInvalid);
     sendResponse(responseInvalid);
   }
 });
 
 const isSearchEngineQuery = (url: string) => {
-  const GOOGLE = "google.com/search";
-  const BING = "bing.com/search";
-  const YOUTUBE = "youtube.com/results";
-  const TIKTOK = "tiktok.com/search";
+  const GOOGLE = 'google.com/search';
+  const BING = 'bing.com/search';
+  const YOUTUBE = 'youtube.com/results';
+  const TIKTOK = 'tiktok.com/search';
 
-  return url.includes(GOOGLE) 
-    || url.includes(BING)
-    || url.includes(TIKTOK)
-    || url.includes(YOUTUBE);
+  return (
+    url.includes(GOOGLE) ||
+    url.includes(BING) ||
+    url.includes(TIKTOK) ||
+    url.includes(YOUTUBE)
+  );
 };
