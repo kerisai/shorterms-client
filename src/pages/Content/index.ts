@@ -1,11 +1,23 @@
 console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
+const termsURLDetectedEvent = new Event("termsURLDetectedEvent");
 
-window.addEventListener('load', () => {
+// Custom event handler for Shorterms
+document.addEventListener("termsURLDetectedEvent", () => {
   // Add parent container node for Modal
   let shortermsContainer = document.createElement('div');
   shortermsContainer.id = "shorterms-container";
-  shortermsContainer.style.cssText = "position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: visible; z-index: 2147483647;";
+  shortermsContainer.style.cssText = "position: absolute; top: 0px; right: 0px; width: 0px; height: 0px; overflow: visible; z-index: 2147483647;";
+
+  // Refer to Simplify
+  const shortermsContainerSpan = document.createElement("span");
+  shortermsContainerSpan.id = "shorterms-container-span";
+  
+  shortermsContainer.appendChild(shortermsContainerSpan);
+
+  // Append Shadow DOM before inserting to Body
+  injectInfoModal(shortermsContainerSpan);
+
   document.body.insertAdjacentElement("afterend", shortermsContainer);
 })
 
@@ -25,6 +37,8 @@ chrome.runtime.sendMessage('VALIDATE_URL', async (response: any) => {
       console.log(termsURL);
 
       chrome.storage.session.set({ termsURL: termsURL });
+      
+      document.dispatchEvent(termsURLDetectedEvent);
     } catch (err) {
       const error = err as unknown as Error;
 
@@ -54,8 +68,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           console.log(`sendResponse: ${termsURL}`);
           sendResponse(termsURL);
 
-          // Inject Shadow DOM Modal into page
-          await injectInfoModal();
+          // TODO Inject Shadow DOM Modal into page
+          // await injectInfoModal();
+
         } catch (err) {
           const error = err as unknown as Error;
 
@@ -228,22 +243,31 @@ const runContentScript = async (): Promise<string> => {
 // Inject InfoModal HTML into page
 
 // IMPL 2 - Working but Shadow DOM covers the whole page...
-const injectInfoModal = async () => {
+const injectInfoModal = async (parent: HTMLElement) => {
   console.log("Running injectInfoModal()...");
 
   // Insert as Shadow DOM
-  const body = document.querySelector("body");
-  const shadow = body?.attachShadow({ mode: "open" });
+
+  // const body = document.querySelector("body");
+  // const shadow = body?.attachShadow({ mode: "open" });
+
+  const shadow = parent.attachShadow({ mode: "open" });
 
   const infoModal = await fetch(chrome.runtime.getURL('InfoModal.html'));
   const infoModalHTMLString = await infoModal.text();
   const infoModalHTML = convertStringIntoHTMLNode(infoModalHTMLString)
 
+  let command = navigator.userAgent.indexOf('Mac OS X') !== -1 ? "Cmd + Shift + S" : "Ctrl + Shift + S";
+  let commandElement = document.querySelector("#shorterms-info-modal-command");
+  
+  if (commandElement) {
+    commandElement!.textContent = command;
+    console.log(`Inserted command ${command} to InfoModal`);
+  }
+
   console.log(`infoModalHTML: ${infoModalHTML} | text: ${infoModalHTML?.textContent}`);
   
   shadow?.appendChild(infoModalHTML);
-
-  // document.body.insertAdjacentHTML('beforeend', infoModalHTML);
 };
 
 const convertStringIntoHTMLNode = (HTMLString: string) => {
