@@ -247,23 +247,11 @@ const injectInfoModal = async (parent: HTMLElement) => {
   console.log("Running injectInfoModal()...");
 
   // Insert as Shadow DOM
-
-  // const body = document.querySelector("body");
-  // const shadow = body?.attachShadow({ mode: "open" });
-
   const shadow = parent.attachShadow({ mode: "open" });
 
   const infoModal = await fetch(chrome.runtime.getURL('InfoModal.html'));
   const infoModalHTMLString = await infoModal.text();
   const infoModalHTML = convertStringIntoHTMLNode(infoModalHTMLString)
-
-  let command = navigator.userAgent.indexOf('Mac OS X') !== -1 ? "Cmd + Shift + S" : "Ctrl + Shift + S";
-  let commandElement = document.querySelector("#shorterms-info-modal-command");
-  
-  if (commandElement) {
-    commandElement!.textContent = command;
-    console.log(`Inserted command ${command} to InfoModal`);
-  }
 
   console.log(`infoModalHTML: ${infoModalHTML} | text: ${infoModalHTML?.textContent}`);
   
