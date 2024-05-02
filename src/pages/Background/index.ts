@@ -5,6 +5,10 @@ console.log('Put the background scripts here.');
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg !== 'VALIDATE_URL') return;
 
+  chrome.storage.session.setAccessLevel({
+    accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
+  });
+
   // Filter keywords
   console.log('Inside chrome.runtime.onMessage');
 
