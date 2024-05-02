@@ -66,7 +66,7 @@ const Popup = () => {
 
   useEffect(() => {
     const retriveCache = async () => {
-      console.log(`Running root useEffect ${new Date()}`);
+      // console.log(`Running root useEffect ${new Date()}`);
       const {termsURL: sessionTermsUrl} = await chrome.storage.session.get("termsURL")
       if (!sessionTermsUrl) {
         return;
@@ -104,15 +104,15 @@ const Popup = () => {
     } catch (err) {
       const error = err as unknown as Error;
       
-      console.log("ERROR");
-      console.log(error);
+      // console.log("ERROR");
+      // console.log(error);
       
       setView(View.Error);
     }
   };
 
   const userAgreesToSummarizeTOS = () => {
-    console.log("User given agreement to summarize TOS...");
+    // console.log("User given agreement to summarize TOS...");
     setView(View.ShortenTOSLoading);
   };
 
@@ -151,7 +151,7 @@ const Popup = () => {
         [termsURL]: data,
       });
     } else {
-      console.log("Error: summarize API failed to return data.");
+      // console.log("Error: summarize API failed to return data.");
       setView(View.Error)
     }
   };
@@ -170,7 +170,7 @@ const Popup = () => {
           summarizeCallback={fetchTOSSummary}
         />;
       case View.ShortenTOSFinished:
-        console.log(`View.ShortenTOSFinished.summarizeData: ${summarizeData}`);
+        // console.log(`View.ShortenTOSFinished.summarizeData: ${summarizeData}`);
 
         if (summarizeData !== null) {
           return <ShortenTOSResultPage

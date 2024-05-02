@@ -6,9 +6,6 @@ export class DetectTOSService {
     
     if (tabId === undefined) {
       const errorMsg = "ERROR: Popup.service.DetectTOSService.findTOSLink: currentTab.id is undefined!";
-      
-      console.log(errorMsg);
-      
       throw new Error(errorMsg);
     }
 
@@ -23,20 +20,17 @@ export class DetectTOSService {
 
       chrome.tabs.sendMessage(tabs[0].id!, "FIND_TOS_LINK_REQUEST",
       (response: string) => {
-        console.log(`response: ${response}`);
         if (!response) {
-          console.log(`No response received from event ${EVENT_NAME} callback`);
+          // (`No response received from event ${EVENT_NAME} callback`);
           resolve("");
           return;
         }  
         
-        console.log(`Received response for link ${EVENT_NAME}\n`, response);
+        // (`Received response for link ${EVENT_NAME}\n`, response);
 
         resolve(response);
       });
   });});
-
-  console.log("outer link:", link);
 
   return link;
   }

@@ -1,5 +1,5 @@
-console.log('Content script works!');
-console.log('Must reload extension for modifications to take effect.');
+// console.log('Content script works!');
+// console.log('Must reload extension for modifications to take effect.');
 const termsURLDetectedEvent = new Event("termsURLDetectedEvent");
 
 // Custom event handler for Shorterms
@@ -23,7 +23,7 @@ document.addEventListener("termsURLDetectedEvent", () => {
 
 chrome.runtime.sendMessage('VALIDATE_URL', async (response: any) => {
   if (response === 'VALIDATE_URL_SUCCESS') {
-    console.log('VALIDATE_URL_SUCCESS, running script...');
+    // console.log('VALIDATE_URL_SUCCESS, running script...');
 
     try {
       const termsURL = await runContentScript();
@@ -32,9 +32,9 @@ chrome.runtime.sendMessage('VALIDATE_URL', async (response: any) => {
         throw new Error('Error: termsURL is null!');
       }
 
-      console.log('SET termsURL', termsURL);
-      console.log(`sendResponse: ${termsURL}`);
-      console.log(termsURL);
+      // console.log('SET termsURL', termsURL);
+      // console.log(`sendResponse: ${termsURL}`);
+      // console.log(termsURL);
 
       chrome.storage.session.set({ termsURL: termsURL });
       
@@ -42,20 +42,20 @@ chrome.runtime.sendMessage('VALIDATE_URL', async (response: any) => {
     } catch (err) {
       const error = err as unknown as Error;
 
-      console.log(error.message);
+      // console.log(error.message);
     }
   } else {
-    console.log('INVALID_URL');
+    // console.log('INVALID_URL');
   }
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('Inside FIND_TOS_LINK_REQUEST');
+  // console.log('Inside FIND_TOS_LINK_REQUEST');
 
   if (message === 'FIND_TOS_LINK_REQUEST') {
     chrome.runtime.sendMessage('VALIDATE_URL', async (response: any) => {
       if (response === 'VALIDATE_URL_SUCCESS') {
-        console.log('VALIDATE_URL_SUCCESS, running script...');
+        // console.log('VALIDATE_URL_SUCCESS, running script...');
 
         try {
           const termsURL = await runContentScript();
@@ -64,8 +64,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             throw new Error('Error: termsURL is null!');
           }
 
-          console.log('SET termsURL', termsURL);
-          console.log(`sendResponse: ${termsURL}`);
+          // console.log('SET termsURL', termsURL);
+          // console.log(`sendResponse: ${termsURL}`);
           sendResponse(termsURL);
 
           // TODO Inject Shadow DOM Modal into page
@@ -74,10 +74,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         } catch (err) {
           const error = err as unknown as Error;
 
-          console.log(error.message);
+          // console.log(error.message);
         }
       } else {
-        console.log('INVALID_URL');
+        // console.log('INVALID_URL');
       }
     });
   }
@@ -124,18 +124,16 @@ const findTermsURLInPage = async (): Promise<string> => {
     const anchorTagsList = await pollFindTermsURL(POLLING_DURATION_SEC);
 
     const fakeDOM = document.getElementsByTagName('body')[0];
-    console.log(`DOM length ${fakeDOM.innerHTML.length} chars\n`);
-    console.log('DOM\n', fakeDOM);
+    // console.log(`DOM length ${fakeDOM.innerHTML.length} chars\n`);
+    // console.log('DOM\n', fakeDOM);
 
     if (anchorTagsList.length == 0) {
       throw new Error('Error: No links found, anchorTagsList has 0 elements!');
     }
 
     // Filter by "Terms" related textContent
-    console.log('<a> tags\n', anchorTagsList);
-    console.log(
-      `Running filterAnchorsByTextContent on ${anchorTagsList.length} <a> tags`
-    );
+    // console.log('<a> tags\n', anchorTagsList);
+    // console.log(`Running filterAnchorsByTextContent on ${anchorTagsList.length} <a> tags`);
     termsURL = filterAnchorsByTextContent(anchorTagsList);
 
     if (termsURL.length === 0) {
@@ -163,7 +161,7 @@ const pollFindTermsURL = async (
   return new Promise((resolve, reject) => {
     const timer = setInterval(() => {
       if (pollingTries >= POLL_COUNT) {
-        console.log('Max poll tries reached...');
+        // console.log('Max poll tries reached...');
         clearTimeout(timer);
         reject(
           new Error(
@@ -173,17 +171,15 @@ const pollFindTermsURL = async (
       }
 
       pollingTries++;
-      console.log(`Running poll... #${pollingTries}`);
+      // console.log(`Running poll... #${pollingTries}`);
 
       anchorTagsList = document.querySelectorAll('a');
 
       if (anchorTagsList.length === 0) {
-        console.log(
-          `Poll ${pollingTries} - No links found: anchorTagsList has 0 elements!`
-        );
+        // console.log(`Poll ${pollingTries} - No links found: anchorTagsList has 0 elements!`);
       } else {
         // Stop interval if anchor tags are found
-        console.log(`Poll ${pollingTries} - Found result!`);
+        // console.log(`Poll ${pollingTries} - Found result!`);
         clearTimeout(timer);
         resolve(anchorTagsList);
       }
@@ -196,9 +192,9 @@ const initMutationObserver = () => {
   const callback = (mutationList: any, observer: any) => {
     for (const mutation of mutationList) {
       if (mutation.type === 'childList') {
-        console.log('A child node has been added or removed.');
+        // console.log('A child node has been added or removed.');
       } else if (mutation.type === 'attributes') {
-        console.log(`The ${mutation.attributeName} attribute was modified.`);
+        // console.log(`The ${mutation.attributeName} attribute was modified.`);
       }
     }
   };
@@ -244,7 +240,7 @@ const runContentScript = async (): Promise<string> => {
 
 // IMPL 2 - Working but Shadow DOM covers the whole page...
 const injectInfoModal = async (parent: HTMLElement) => {
-  console.log("Running injectInfoModal()...");
+  // console.log("Running injectInfoModal()...");
 
   // Insert as Shadow DOM
   const shadow = parent.attachShadow({ mode: "open" });
@@ -253,7 +249,7 @@ const injectInfoModal = async (parent: HTMLElement) => {
   const infoModalHTMLString = await infoModal.text();
   const infoModalHTML = convertStringIntoHTMLNode(infoModalHTMLString)
 
-  console.log(`infoModalHTML: ${infoModalHTML} | text: ${infoModalHTML?.textContent}`);
+  // console.log(`infoModalHTML: ${infoModalHTML} | text: ${infoModalHTML?.textContent}`);
   
   shadow?.appendChild(infoModalHTML);
 };
