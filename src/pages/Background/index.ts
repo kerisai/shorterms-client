@@ -58,9 +58,3 @@ const isSearchEngineQuery = (url: string) => {
     || url.includes(TIKTOK)
     || url.includes(YOUTUBE);
 };
-
-// "externally_connectable": {
-//   "ids": ["ipdmhnfcaelfmeappeahgeofdncnncmb"],
-//   "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-//   "accepts_tls_channel_id": false
-// }
