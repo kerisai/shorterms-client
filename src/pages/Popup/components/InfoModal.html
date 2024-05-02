@@ -1,0 +1,27 @@
+<div 
+  id="shorterms-info-modal" 
+  class="absolute flex flex-col justify-center gap-y-1 top-0 right-0 z-100 opacity-70 px-4 py-2 rounded-lg bg-gray-200 w-fit h-[80px]"
+>
+  <template shadowrootmode="open">
+
+  </template>
+  <p class="text-sm font-semibold">
+    Detected Terms of Service in this page...
+  </p>
+  <p class="text-xs">
+    Open the Shorterms Extension or click
+
+    <span id="shorterms-info-modal-command">
+      
+    </span>
+  </p>
+</div>
+<script>
+  console.log(`window.addEventListener('load') fired at ${new Date()}`);
+
+  let command = navigator.userAgent.indexOf('Mac OS X') !== -1 ? "Cmd + Shift + S" : "Ctrl + Shift + S";
+  let commandElement = document.querySelector("#shorterms-info-modal-command");
+  commandElement.textContent = command;
+
+  console.log(`Inserted command ${command} to InfoModal`);
+</script>

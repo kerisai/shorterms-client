@@ -223,6 +223,14 @@ var options = {
       chunks: ['panel'],
       cache: false,
     }),
+
+    // Add InfoModal.html
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'src', 'pages', 'Popup', 'components', 'InfoModal.html'),
+      filename: 'InfoModal.html',
+      chunks: ['InfoModal'],
+      cache: false,
+    }),
   ].filter(Boolean),
   infrastructureLogging: {
     level: 'info',

@@ -1,6 +1,14 @@
 console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
 
+window.addEventListener('load', () => {
+  // Add parent container node for Modal
+  let shortermsContainer = document.createElement('div');
+  shortermsContainer.id = "shorterms-container";
+  shortermsContainer.style.cssText = "position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: visible; z-index: 2147483647;";
+  document.body.insertAdjacentElement("afterend", shortermsContainer);
+})
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("Inside FIND_TOS_LINK_REQUEST");
 
@@ -16,9 +24,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             throw new Error("Error: termsURL is null!");
           }
   
-          console.log("SET termsURL", termsURL);
           console.log(`sendResponse: ${termsURL}`);
           sendResponse(termsURL);
+
+          // Inject Shadow DOM Modal into page
+          await injectInfoModal();
         } catch (err) {
           const error = err as unknown as Error;
           
@@ -180,3 +190,31 @@ const runContentScript = async (): Promise<string> => {
   }
 };
 
+// Inject InfoModal HTML into page
+
+// IMPL 2 - Working but Shadow DOM covers the whole page...
+const injectInfoModal = async () => {
+  console.log("Running injectInfoModal()...");
+
+  // Insert as Shadow DOM
+  const body = document.querySelector("body");
+  const shadow = body?.attachShadow({ mode: "open" });
+
+  const infoModal = await fetch(chrome.runtime.getURL('InfoModal.html'));
+  const infoModalHTMLString = await infoModal.text();
+  const infoModalHTML = convertStringIntoHTMLNode(infoModalHTMLString)
+
+  console.log(`infoModalHTML: ${infoModalHTML} | text: ${infoModalHTML?.textContent}`);
+  
+  shadow?.appendChild(infoModalHTML);
+
+  // document.body.insertAdjacentHTML('beforeend', infoModalHTML);
+};
+
+const convertStringIntoHTMLNode = (HTMLString: string) => {
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = HTMLString;
+  const HTML = wrapper.firstChild!;
+
+  return HTML;
+}
