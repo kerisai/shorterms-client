@@ -1,6 +1,35 @@
-# Shorterms Browser Extension Client
+# Shorterms Chrome Extension Client
 
-## Installing and Running
+## [End Users] Installing on your Chrome browser
+As we are still waiting for approval to publish on the Chrome Web Store, you can kindly try out the extension by using the ZIP file in our latest release.
+
+### Procedures:
+#### Installing the build folder on your machine
+1. Go to Shorterms' repository and find the `Release` section - `https://github.com/kerisai/shorterms-client/releases/tag/alpha` ![image](https://github.com/kerisai/shorterms-client/assets/42536973/dd0b76b0-4cd8-468b-98c7-eaaa20793753)
+
+2. Install our release ZIP file (`shorterms-0.0.1-release.zip`) <br>![image](https://github.com/kerisai/shorterms-client/assets/42536973/1bec1f69-d81f-49dc-80f0-9fa69324c389)
+
+3. After installation, unzip the file on your local computer, and ensure that a new folder with the same name is created <br> ![image](https://github.com/kerisai/shorterms-client/assets/42536973/02983942-4995-4eab-b950-9b67a483cb89)
+
+#### Installing the extension on Chrome
+4. Open Google Chrome, and type in this link on the search bar / omnibox: `chrome://extensions/` <br>  ![image](https://github.com/kerisai/shorterms-client/assets/42536973/6b365398-d2fb-4045-8ae9-3ae1be034405)
+
+5. Activate `Developer Mode` toggle on the top right corner ![image](https://github.com/kerisai/shorterms-client/assets/42536973/43d2485e-f27f-4e31-972c-330eabe88de3)
+
+6. Click `Load Unpacked` on the top left corner of the screen
+
+7. Upload the folder that you extracted on step 4. Note that you must upload the entire folder for this step to work. <br> ![image](https://github.com/kerisai/shorterms-client/assets/42536973/a7b5fdac-d9b4-4085-9de2-9cced4ca9dea)
+
+#### Trying out the Shorterms Extension
+8. Ensure that Shorterms extension is now installed on Chrome <br> ![image](https://github.com/kerisai/shorterms-client/assets/42536973/42156f2c-add8-40f0-ac0d-fd82b885cfc4)
+
+9. Go to any site that has a Terms of Service link somewhere inside it - we'll use `github.com/signup` for this one. You'll see that the Chrome Extension automatically searches for ToS links and shows a Modal on the top right corner if they're found. 
+
+10. Click Cmd + Shift + S to open the extension, and you can now summarize any Terms of Service on any site within a click, using Google's Gemini AI model!
+
+<hr>
+
+## [Developers] Installing and Running
 ### Procedures:
 
 1. Check if your [Node.js](https://nodejs.org/) version is >= **18**.
