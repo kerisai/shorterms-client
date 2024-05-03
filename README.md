@@ -5,7 +5,7 @@ As we are still waiting for approval to publish on the Chrome Web Store, you can
 
 ### Procedures:
 #### Installing the build folder on your machine
-1. Go to Shorterms' repository and find the `Release` section - `https://github.com/kerisai/shorterms-client/releases/tag/alpha` ![image](https://github.com/kerisai/shorterms-client/assets/42536973/dd0b76b0-4cd8-468b-98c7-eaaa20793753)
+1. Go to Shorterms' repository and find the `Release` section - `https://github.com/kerisai/shorterms-client/releases/tag/alpha` <br> ![image](https://github.com/kerisai/shorterms-client/assets/42536973/dd0b76b0-4cd8-468b-98c7-eaaa20793753)
 
 2. Install our release ZIP file (`shorterms-0.0.1-release.zip`) <br>![image](https://github.com/kerisai/shorterms-client/assets/42536973/1bec1f69-d81f-49dc-80f0-9fa69324c389)
 
@@ -14,7 +14,7 @@ As we are still waiting for approval to publish on the Chrome Web Store, you can
 #### Installing the extension on Chrome
 4. Open Google Chrome, and type in this link on the search bar / omnibox: `chrome://extensions/` <br>  ![image](https://github.com/kerisai/shorterms-client/assets/42536973/6b365398-d2fb-4045-8ae9-3ae1be034405)
 
-5. Activate `Developer Mode` toggle on the top right corner ![image](https://github.com/kerisai/shorterms-client/assets/42536973/43d2485e-f27f-4e31-972c-330eabe88de3)
+5. Activate `Developer Mode` toggle on the top right corner <br> ![image](https://github.com/kerisai/shorterms-client/assets/42536973/43d2485e-f27f-4e31-972c-330eabe88de3)
 
 6. Click `Load Unpacked` on the top left corner of the screen
 
